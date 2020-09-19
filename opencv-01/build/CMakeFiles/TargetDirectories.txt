@@ -1,4 +1,0 @@
-/mnt/8668734168732F55/Development/cpp-training/opencv-01/build/CMakeFiles/rebuild_cache.dir
-/mnt/8668734168732F55/Development/cpp-training/opencv-01/build/CMakeFiles/edit_cache.dir
-/mnt/8668734168732F55/Development/cpp-training/opencv-01/build/CMakeFiles/a.out.dir
-/mnt/8668734168732F55/Development/cpp-training/opencv-01/build/CMakeFiles/a.out_autogen.dir
