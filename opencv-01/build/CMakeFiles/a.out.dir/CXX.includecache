@@ -6,12 +6,12 @@
 
 #IncludeRegexTransform: 
 
-/mnt/8668734168732F55/Development/cpp-training/opencv-01/build/a.out_autogen/mocs_compilation.cpp
-
 /mnt/8668734168732F55/Development/cpp-training/opencv-01/main.cpp
 opencv2/core/core.hpp
 -
 opencv2/highgui/highgui.hpp
+-
+opencv2/videoio.hpp
 -
 iostream
 -
