@@ -34,3 +34,10 @@
 # build files
 */build/*
 !*/build/a.out
+
+# asset files
+*/assets/*
+!*/assets/dumm.jpg
+
+# vscode
+*/.vscode
