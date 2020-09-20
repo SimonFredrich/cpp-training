@@ -9,18 +9,23 @@
 using namespace cv;
 using namespace std;
 
+// define constants
 #define VIDEO "./assets/autofahrt_02.mp4"
+
+// define functions
 Mat turnGray(Mat &frame);
 vector<Vec2f> getLines(Mat &frame);
 void drawLines(const vector<Vec2f> lines, Mat &frame);
+Mat cropFrame(const Mat frame, const Point* ppt[1], int npt[]);
+
+// define variables
+Mat frame, frame_cropped;
 
 int main(int argc, char** argv)
 {
-    Mat frame;
-	Mat frame_gray;
-	vector<Vec2f> lines;
-
     VideoCapture cap(VIDEO);
+
+	vector<Vec2f> lines;
 
     if (!cap.isOpened()){
 		cerr << "Camera konnte nicht geöffnet werden\n";
@@ -28,7 +33,9 @@ int main(int argc, char** argv)
 	}
 
 	cout << "Frames werden jetzt abgerufen" << endl
-		<< "Um zu beenden q (quit) drücken." << endl;
+		<< "Um zu beenden q (quit) drücken.\n" << endl;
+
+	bool print_frame_stats = true;
 
 	for (;;)
 	{
@@ -39,21 +46,50 @@ int main(int argc, char** argv)
 			break;
 		}
 
-		frame_gray = turnGray(frame);
-		lines = getLines(frame_gray);
-		drawLines(lines, frame);
-		
+		// get frame dimensions
+		int height = frame.size().height;
+		int width = frame.size().width;
+		int channels = frame.channels();
+
+		// get image stats
+		if (print_frame_stats)
+		{
+			cout << "Image type: " << frame.type() << endl;
+			cout << "Image dimensions: (" << height
+				<< ", " << width << ", "<< channels
+				<< ")" << endl;
+			print_frame_stats = false;
+		}
+
+		// define and init vertices for polygonal crop
+		Point vertices[1][4];
+		vertices[0][0].x = (0);
+		vertices[0][0].y = (height);
+		vertices[0][1].x = (width/2);
+		vertices[0][1].y = (height/2);
+		vertices[0][2].x = (width);
+		vertices[0][2].y = (height - height/8);
+		vertices[0][3].x = (width);
+		vertices[0][3].y = (height);
+		const Point* set_of_vertices[1] = {vertices[0]};
+		int num_of_vertices[] = {4};
+
+		// performe polygonal crop
+		frame_cropped = cropFrame(frame, set_of_vertices, num_of_vertices);
+
+		// show results
 		namedWindow("Frame", WINDOW_NORMAL);
+		namedWindow("Cropped Frame", WINDOW_NORMAL);
 		resizeWindow("Frame", 900, 550);
+		resizeWindow("Cropped Frame", 900, 550);
 		imshow("Frame", frame);
+		imshow("Cropped Frame", frame_cropped);
 
 		if (waitKey(25) >= 113)
 			break;
 	}
 
 	cap.release();
-	destroyAllWindows();
-	
     return 0;
 }
 
@@ -73,18 +109,38 @@ vector<Vec2f> getLines(Mat &frame_input)
 
 void drawLines(const vector<Vec2f> lines, Mat &frame)
 {
-	for (size_t i = 0; i < lines.size(); i++)
-	{
-		float rho = lines[i][0], theta = lines[i][1];
-		Point pt1, pt2;
-		double a = cos(theta), b = sin(theta);
-		double x0 = a*rho, y0 = b*rho;
-		pt1.x = cvRound(x0 + 1000*(-b));
-		pt1.y = cvRound(y0 + 1000*(a));
-		pt2.x = cvRound(x0 - 1000*(-b));
-		pt2.y = cvRound(y0 - 1000*(a));
-		line(frame, pt1, pt2, Scalar(0,0,255), 3, LINE_AA);
-	}
+	for( size_t i = 0; i < lines.size(); i++ )
+    {
+        float rho = lines[i][0], theta = lines[i][1];
+        Point pt1, pt2;
+        double a = cos(theta), b = sin(theta);
+        double x0 = a*rho, y0 = b*rho;
+        pt1.x = cvRound(x0 + 1000*(-b));
+        pt1.y = cvRound(y0 + 1000*(a));
+        pt2.x = cvRound(x0 - 1000*(-b));
+        pt2.y = cvRound(y0 - 1000*(a));
+        line(frame, pt1, pt2, Scalar(0,0,255), 3, LINE_AA);
+    }
+
 }
 
+Mat cropFrame(const Mat frame, const Point* set_of_vertices[1], 
+			int num_of_vertices[])
+{
+	// create a blank frame
+	Mat mask = Mat::zeros(Size(frame.cols, frame.rows), frame.type()); 
+	
+	// retrieve the number of color channels of the frame
+	int channels = frame.channels();
 
+	// fill polygon with the color white
+	fillPoly(mask, set_of_vertices, num_of_vertices, 1, Scalar(255, 255, 255), 8);
+
+	// fill only the poly-region with frame pixels
+	Mat poly_mask;
+	bitwise_and(frame, mask, poly_mask);
+
+	// return only where mask pixels match
+	return poly_mask;
+
+}
