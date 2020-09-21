@@ -16,7 +16,8 @@ using namespace std;
 Mat turnGray(Mat &frame);
 vector<Vec2f> getLines(Mat &frame);
 void drawLines(const vector<Vec2f> lines, Mat &frame);
-Mat cropFrame(const Mat frame, const Point* ppt[1], int npt[]);
+Mat cropFrame(const Mat frame, const Point* set_of_vertices[1], 
+			int num_of_vertices[]);
 
 // define variables
 Mat frame, frame_cropped;
