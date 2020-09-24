@@ -16,11 +16,12 @@ using namespace std;
 Mat turnGray(Mat &frame);
 vector<Vec2f> getLines(Mat &frame);
 void drawLines(const vector<Vec2f> lines, Mat &frame);
-Mat cropFrame(const Mat frame, const Point* set_of_vertices[1], 
+Mat cropFrame(const Mat &frame, const Point* set_of_vertices[1], 
 			int num_of_vertices[]);
+Mat findEdges(Mat &frame);
 
 // define variables
-Mat frame, frame_cropped, frame_gray;
+Mat frame, frame_cropped, frame_gray, frame_edges;
 
 int main(int argc, char** argv)
 {
@@ -77,7 +78,10 @@ int main(int argc, char** argv)
 
 		// performe polygonal crop
 		frame_cropped = cropFrame(frame, set_of_vertices, num_of_vertices);
+		// convert cropped frame to grayscale
 		frame_gray = turnGray(frame_cropped);
+		// find edges in grayscale frame
+		frame_edges = findEdges(frame_gray);
 
 		// set up windows to show results in 
 		string name_original_window = "Frame";
@@ -90,7 +94,7 @@ int main(int argc, char** argv)
 		moveWindow(name_processed_window, 1000, 100);
 		// show results
 		imshow(name_original_window, frame);
-		imshow(name_processed_window, frame_gray);
+		imshow(name_processed_window, frame_edges);
 
 		if (waitKey(25) >= 113)
 			break;
@@ -131,7 +135,7 @@ void drawLines(const vector<Vec2f> lines, Mat &frame)
 
 }
 
-Mat cropFrame(const Mat frame, const Point* set_of_vertices[1], 
+Mat cropFrame(const Mat &frame, const Point* set_of_vertices[1], 
 			int num_of_vertices[])
 {
 	// create a blank frame
@@ -152,3 +156,9 @@ Mat cropFrame(const Mat frame, const Point* set_of_vertices[1],
 
 }
 
+Mat findEdges(Mat &frame)
+{
+	Mat edges;
+	Canny(frame, edges, 100, 180);
+	return edges;
+}
