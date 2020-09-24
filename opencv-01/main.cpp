@@ -20,7 +20,7 @@ Mat cropFrame(const Mat frame, const Point* set_of_vertices[1],
 			int num_of_vertices[]);
 
 // define variables
-Mat frame, frame_cropped;
+Mat frame, frame_cropped, frame_gray;
 
 int main(int argc, char** argv)
 {
@@ -77,14 +77,20 @@ int main(int argc, char** argv)
 
 		// performe polygonal crop
 		frame_cropped = cropFrame(frame, set_of_vertices, num_of_vertices);
+		frame_gray = turnGray(frame_cropped);
 
+		// set up windows to show results in 
+		string name_original_window = "Frame";
+		string name_processed_window = "Frame Processed";
+		namedWindow(name_original_window, WINDOW_NORMAL);
+		namedWindow(name_processed_window, WINDOW_NORMAL);
+		resizeWindow(name_original_window, 900, 550);
+		resizeWindow(name_processed_window, 900, 550);
+		moveWindow(name_original_window, 100, 100);
+		moveWindow(name_processed_window, 1000, 100);
 		// show results
-		namedWindow("Frame", WINDOW_NORMAL);
-		namedWindow("Cropped Frame", WINDOW_NORMAL);
-		resizeWindow("Frame", 900, 550);
-		resizeWindow("Cropped Frame", 900, 550);
-		imshow("Frame", frame);
-		imshow("Cropped Frame", frame_cropped);
+		imshow(name_original_window, frame);
+		imshow(name_processed_window, frame_gray);
 
 		if (waitKey(25) >= 113)
 			break;
@@ -145,3 +151,4 @@ Mat cropFrame(const Mat frame, const Point* set_of_vertices[1],
 	return poly_mask;
 
 }
+
