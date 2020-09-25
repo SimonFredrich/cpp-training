@@ -14,8 +14,8 @@ using namespace std;
 
 // define functions
 Mat turnGray(Mat &frame);
-vector<Vec2f> getLines(Mat &frame);
-void drawLines(const vector<Vec2f> lines, Mat &frame);
+vector<Vec2f> findLines(Mat &frame);
+void drawLines(const vector<Vec2f> &lines, Mat &frame);
 Mat cropFrame(const Mat &frame, const Point* set_of_vertices[1], 
 			int num_of_vertices[]);
 Mat findEdges(Mat &frame);
@@ -76,12 +76,16 @@ int main(int argc, char** argv)
 		const Point* set_of_vertices[1] = {vertices[0]};
 		int num_of_vertices[] = {4};
 
-		// performe polygonal crop
-		frame_cropped = cropFrame(frame, set_of_vertices, num_of_vertices);
 		// convert cropped frame to grayscale
-		frame_gray = turnGray(frame_cropped);
+		frame_gray = turnGray(frame);
 		// find edges in grayscale frame
 		frame_edges = findEdges(frame_gray);
+		// performe polygonal crop
+		frame_cropped = cropFrame(frame_edges, set_of_vertices, num_of_vertices);
+
+		// find and draw lines
+		vector<Vec2f> lines = findLines(frame_cropped);
+		drawLines(lines, frame);
 
 		// set up windows to show results in 
 		string name_original_window = "Frame";
@@ -94,7 +98,7 @@ int main(int argc, char** argv)
 		moveWindow(name_processed_window, 1000, 100);
 		// show results
 		imshow(name_original_window, frame);
-		imshow(name_processed_window, frame_edges);
+		imshow(name_processed_window, frame_cropped);
 
 		if (waitKey(25) >= 113)
 			break;
@@ -111,14 +115,14 @@ Mat turnGray(Mat &frame)
 	return frame_gray;
 }
 
-vector<Vec2f> getLines(Mat &frame_input)
+vector<Vec2f> findLines(Mat &frame_input)
 {
 	vector<Vec2f> lines;
-	HoughLines(frame_input, lines, 1, CV_PI/180, 50, 0, 0);
+	HoughLines(frame_input, lines, 6, CV_PI/60, 160);
 	return lines;
 }
 
-void drawLines(const vector<Vec2f> lines, Mat &frame)
+void drawLines(const vector<Vec2f> &lines, Mat &frame)
 {
 	for( size_t i = 0; i < lines.size(); i++ )
     {
