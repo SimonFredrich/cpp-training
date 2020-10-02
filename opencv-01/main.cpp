@@ -116,6 +116,9 @@ int main(int argc, char** argv)
     return 0;
 }
 
+/***
+ * This function returns a grayscale version of the input frame.
+ ***/
 Mat turnGray(Mat &frame)
 {
 	Mat frame_gray;
@@ -123,7 +126,9 @@ Mat turnGray(Mat &frame)
 	return frame_gray;
 }
 
-
+/***
+ * This function returns lines calculated with cv::HoughLines(...).
+ ***/
 vector<Vec2f> findLines(Mat &frame_input)
 {
 	vector<Vec2f> lines;
@@ -131,6 +136,9 @@ vector<Vec2f> findLines(Mat &frame_input)
 	return lines;
 }
 
+/***
+ * This function returns lines calculated with cv::HoughLinesP(...).
+ ***/
 vector<Vec4i> findLinesProbabilistic(Mat &frame_input)
 {
 	vector<Vec4i> lines;
@@ -138,6 +146,10 @@ vector<Vec4i> findLinesProbabilistic(Mat &frame_input)
 	return lines;
 }
 
+/***
+ * This function draws the lines calculated with cv::HoughLines(...)
+ * on the input frame.
+ ***/
 void drawLines(const vector<Vec2f> &lines, Mat &frame, const Scalar &color)
 {
 	for( size_t i = 0; i < lines.size(); i++ )
@@ -154,6 +166,10 @@ void drawLines(const vector<Vec2f> &lines, Mat &frame, const Scalar &color)
 	}
 }
 
+/***
+ * This function draws the lines calculated with cv::HoughLinesP(...)
+ * on the input frame.
+ ***/
 void drawLinesProbabilistic(const vector<Vec4i> &lines, Mat &frame, const Scalar &color)
 {
 	for( size_t i = 0; i < lines.size(); i++ )
@@ -170,6 +186,9 @@ void drawLinesProbabilistic(const vector<Vec4i> &lines, Mat &frame, const Scalar
 	}
 }
 
+/***
+ * This function returns a polygon of the input frame.
+ ***/
 Mat cropFrame(const Mat &frame, const Point* set_of_vertices[1], 
 			int num_of_vertices[])
 {
@@ -191,6 +210,9 @@ Mat cropFrame(const Mat &frame, const Point* set_of_vertices[1],
 
 }
 
+/***
+ * This function finds the edges in a given frame.
+ ***/
 Mat findEdges(Mat &frame)
 {
 	Mat edges;
@@ -198,6 +220,10 @@ Mat findEdges(Mat &frame)
 	return edges;
 }
 
+/***
+ * This function sorts the lines by slope (negative/positive);
+ * It then returns a vector of left and right lines.
+ ***/
 vector<vector<Vec2f>> seperateLines(vector<Vec2f> &lines)
 {
 	vector<vector<Vec2f>> line_collector(2);
