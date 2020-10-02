@@ -15,7 +15,9 @@ using namespace std;
 // define functions
 Mat turnGray(Mat &frame);
 vector<Vec2f> findLines(Mat &frame);
+vector<Vec4i> findLinesProbabilistic(Mat &frame_input);
 void drawLines(const vector<Vec2f> &lines, Mat &frame);
+void drawLinesProbabilistic(const vector<Vec4i> &lines, Mat &frame);
 Mat cropFrame(const Mat &frame, const Point* set_of_vertices[1], 
 			int num_of_vertices[]);
 Mat findEdges(Mat &frame);
@@ -84,7 +86,7 @@ int main(int argc, char** argv)
 		frame_cropped = cropFrame(frame_edges, set_of_vertices, num_of_vertices);
 
 		// find and draw lines
-		vector<Vec2f> lines = findLines(frame_cropped);
+		lines = findLines(frame_cropped);
 		drawLines(lines, frame);
 
 		// set up windows to show results in 
@@ -115,28 +117,51 @@ Mat turnGray(Mat &frame)
 	return frame_gray;
 }
 
+
 vector<Vec2f> findLines(Mat &frame_input)
 {
 	vector<Vec2f> lines;
-	HoughLines(frame_input, lines, 6, CV_PI/60, 160);
+	HoughLines(frame_input, lines, 6, CV_PI/60, 220);
+	return lines;
+}
+
+vector<Vec4i> findLinesProbabilistic(Mat &frame_input)
+{
+	vector<Vec4i> lines;
+	HoughLinesP(frame_input, lines, 1, CV_PI, 100, 40, 25);
 	return lines;
 }
 
 void drawLines(const vector<Vec2f> &lines, Mat &frame)
 {
 	for( size_t i = 0; i < lines.size(); i++ )
-    {
-        float rho = lines[i][0], theta = lines[i][1];
-        Point pt1, pt2;
-        double a = cos(theta), b = sin(theta);
-        double x0 = a*rho, y0 = b*rho;
-        pt1.x = cvRound(x0 + 1000*(-b));
-        pt1.y = cvRound(y0 + 1000*(a));
-        pt2.x = cvRound(x0 - 1000*(-b));
-        pt2.y = cvRound(y0 - 1000*(a));
-        line(frame, pt1, pt2, Scalar(0,0,255), 3, LINE_AA);
-    }
+	{
+		float rho = lines[i][0], theta = lines[i][1];
+		Point pt1, pt2;
+		double a = cos(theta), b = sin(theta);
+		double x0 = a*rho, y0 = b*rho;
+		pt1.x = cvRound(x0 + 1000*(-b));
+		pt1.y = cvRound(y0 + 1000*(a));
+		pt2.x = cvRound(x0 - 1000*(-b));
+		pt2.y = cvRound(y0 - 1000*(a));
+		line(frame, pt1, pt2, Scalar(0,0,255), 3, LINE_AA);
+	}
+}
 
+void drawLinesProbabilistic(const vector<Vec4i> &lines, Mat &frame)
+{
+	for( size_t i = 0; i < lines.size(); i++ )
+	{
+		float rho = lines[i][0], theta = lines[i][1];
+		Point pt1, pt2;
+		double a = cos(theta), b = sin(theta);
+		double x0 = a*rho, y0 = b*rho;
+		pt1.x = cvRound(x0 + 1000*(-b));
+		pt1.y = cvRound(y0 + 1000*(a));
+		pt2.x = cvRound(x0 - 1000*(-b));
+		pt2.y = cvRound(y0 - 1000*(a));
+		line(frame, pt1, pt2, Scalar(0,0,255), 3, LINE_AA);
+	}
 }
 
 Mat cropFrame(const Mat &frame, const Point* set_of_vertices[1], 
@@ -163,6 +188,6 @@ Mat cropFrame(const Mat &frame, const Point* set_of_vertices[1],
 Mat findEdges(Mat &frame)
 {
 	Mat edges;
-	Canny(frame, edges, 100, 180);
+	Canny(frame, edges, 100, 150);
 	return edges;
 }
