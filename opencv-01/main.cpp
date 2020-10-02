@@ -18,27 +18,29 @@ vector<Vec2f> findLines(Mat &frame);
 vector<Vec4i> findLinesProbabilistic(Mat &frame_input);
 void drawLines(const vector<Vec2f> &lines, Mat &frame, const Scalar &color);
 void drawLinesProbabilistic(const vector<Vec4i> &lines, Mat &frame, const Scalar &color);
-Mat cropFrame(const Mat &frame, const Point* set_of_vertices[1], 
-			int num_of_vertices[]);
+Mat cropFrame(const Mat &frame, const Point *set_of_vertices[1],
+			  int num_of_vertices[]);
 Mat findEdges(Mat &frame);
 vector<vector<Vec2f>> seperateLines(vector<Vec2f> &lines);
 
 // define variables
 Mat frame, frame_cropped, frame_gray, frame_edges;
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    VideoCapture cap(VIDEO);
+	VideoCapture cap(VIDEO);
 
 	vector<Vec2f> lines;
 
-    if (!cap.isOpened()){
+	if (!cap.isOpened())
+	{
 		cerr << "Camera konnte nicht geöffnet werden\n";
 		return -1;
 	}
 
 	cout << "Frames werden jetzt abgerufen" << endl
-		<< "Um zu beenden q (quit) drücken.\n" << endl;
+		 << "Um zu beenden q (quit) drücken.\n"
+		 << endl;
 
 	bool print_frame_stats = true;
 
@@ -61,8 +63,8 @@ int main(int argc, char** argv)
 		{
 			cout << "Image type: " << frame.type() << endl;
 			cout << "Image dimensions: (" << height
-				<< ", " << width << ", "<< channels
-				<< ")" << endl;
+				 << ", " << width << ", " << channels
+				 << ")" << endl;
 			print_frame_stats = false;
 		}
 
@@ -70,13 +72,13 @@ int main(int argc, char** argv)
 		Point vertices[1][4];
 		vertices[0][0].x = (0);
 		vertices[0][0].y = (height);
-		vertices[0][1].x = (width/2);
-		vertices[0][1].y = (height/2);
+		vertices[0][1].x = (width / 2);
+		vertices[0][1].y = (height / 2);
 		vertices[0][2].x = (width);
-		vertices[0][2].y = (height - height/8);
+		vertices[0][2].y = (height - height / 8);
 		vertices[0][3].x = (width);
 		vertices[0][3].y = (height);
-		const Point* set_of_vertices[1] = {vertices[0]};
+		const Point *set_of_vertices[1] = {vertices[0]};
 		int num_of_vertices[] = {4};
 
 		// convert cropped frame to grayscale
@@ -95,7 +97,7 @@ int main(int argc, char** argv)
 		drawLines(lines_left, frame, Scalar(255, 0, 0));
 		drawLines(lines_right, frame, Scalar(0, 0, 255));
 
-		// set up windows to show results in 
+		// set up windows to show results in
 		string name_original_window = "Frame";
 		string name_processed_window = "Frame Processed";
 		namedWindow(name_original_window, WINDOW_NORMAL);
@@ -113,7 +115,7 @@ int main(int argc, char** argv)
 	}
 
 	cap.release();
-    return 0;
+	return 0;
 }
 
 /***
@@ -132,7 +134,7 @@ Mat turnGray(Mat &frame)
 vector<Vec2f> findLines(Mat &frame_input)
 {
 	vector<Vec2f> lines;
-	HoughLines(frame_input, lines, 6, CV_PI/60, 220);
+	HoughLines(frame_input, lines, 6, CV_PI / 60, 220);
 	return lines;
 }
 
@@ -152,16 +154,16 @@ vector<Vec4i> findLinesProbabilistic(Mat &frame_input)
  ***/
 void drawLines(const vector<Vec2f> &lines, Mat &frame, const Scalar &color)
 {
-	for( size_t i = 0; i < lines.size(); i++ )
+	for (size_t i = 0; i < lines.size(); i++)
 	{
 		float rho = lines[i][0], theta = lines[i][1];
 		Point pt1, pt2;
 		double a = cos(theta), b = sin(theta);
-		double x0 = a*rho, y0 = b*rho;
-		pt1.x = cvRound(x0 + 1000*(-b));
-		pt1.y = cvRound(y0 + 1000*(a));
-		pt2.x = cvRound(x0 - 1000*(-b));
-		pt2.y = cvRound(y0 - 1000*(a));
+		double x0 = a * rho, y0 = b * rho;
+		pt1.x = cvRound(x0 + 1000 * (-b));
+		pt1.y = cvRound(y0 + 1000 * (a));
+		pt2.x = cvRound(x0 - 1000 * (-b));
+		pt2.y = cvRound(y0 - 1000 * (a));
 		line(frame, pt1, pt2, color, 3, LINE_AA);
 	}
 }
@@ -172,16 +174,16 @@ void drawLines(const vector<Vec2f> &lines, Mat &frame, const Scalar &color)
  ***/
 void drawLinesProbabilistic(const vector<Vec4i> &lines, Mat &frame, const Scalar &color)
 {
-	for( size_t i = 0; i < lines.size(); i++ )
+	for (size_t i = 0; i < lines.size(); i++)
 	{
 		float rho = lines[i][0], theta = lines[i][1];
 		Point pt1, pt2;
 		double a = cos(theta), b = sin(theta);
-		double x0 = a*rho, y0 = b*rho;
-		pt1.x = cvRound(x0 + 1000*(-b));
-		pt1.y = cvRound(y0 + 1000*(a));
-		pt2.x = cvRound(x0 - 1000*(-b));
-		pt2.y = cvRound(y0 - 1000*(a));
+		double x0 = a * rho, y0 = b * rho;
+		pt1.x = cvRound(x0 + 1000 * (-b));
+		pt1.y = cvRound(y0 + 1000 * (a));
+		pt2.x = cvRound(x0 - 1000 * (-b));
+		pt2.y = cvRound(y0 - 1000 * (a));
 		line(frame, pt1, pt2, color, 3, LINE_AA);
 	}
 }
@@ -189,12 +191,12 @@ void drawLinesProbabilistic(const vector<Vec4i> &lines, Mat &frame, const Scalar
 /***
  * This function returns a polygon of the input frame.
  ***/
-Mat cropFrame(const Mat &frame, const Point* set_of_vertices[1], 
-			int num_of_vertices[])
+Mat cropFrame(const Mat &frame, const Point *set_of_vertices[1],
+			  int num_of_vertices[])
 {
 	// create a blank frame
-	Mat mask = Mat::zeros(Size(frame.cols, frame.rows), frame.type()); 
-	
+	Mat mask = Mat::zeros(Size(frame.cols, frame.rows), frame.type());
+
 	// retrieve the number of color channels of the frame
 	int channels = frame.channels();
 
@@ -207,7 +209,6 @@ Mat cropFrame(const Mat &frame, const Point* set_of_vertices[1],
 
 	// return only where mask pixels match
 	return poly_mask;
-
 }
 
 /***
@@ -232,23 +233,25 @@ vector<vector<Vec2f>> seperateLines(vector<Vec2f> &lines)
 		float rho = lines[i][0], theta = lines[i][1];
 		Point2d pt1, pt2;
 		double a = cos(theta), b = sin(theta);
-		double x0 = a*rho, y0 = b*rho;
-		pt1.x = cvRound(x0 + 1000*(-b));
-		pt1.y = cvRound(y0 + 1000*(a));
-		pt2.x = cvRound(x0 - 1000*(-b));
-		pt2.y = cvRound(y0 - 1000*(a));
+		double x0 = a * rho, y0 = b * rho;
+		pt1.x = cvRound(x0 + 1000 * (-b));
+		pt1.y = cvRound(y0 + 1000 * (a));
+		pt2.x = cvRound(x0 - 1000 * (-b));
+		pt2.y = cvRound(y0 - 1000 * (a));
 
 		// calculate slope
 		double slope = (pt2.y - pt1.y) / (pt2.x - pt1.x);
-		
+
 		// continue only for very vertical lines
-		if (fabs(slope) < 0.5) continue;
+		if (fabs(slope) < 0.5)
+			continue;
 
 		cout << slope << endl;
 		if (slope <= 0)
 		{
 			line_collector[0].push_back(lines[i]);
-		} else 
+		}
+		else
 		{
 			line_collector[1].push_back(lines[i]);
 		}
