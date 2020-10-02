@@ -16,11 +16,12 @@ using namespace std;
 Mat turnGray(Mat &frame);
 vector<Vec2f> findLines(Mat &frame);
 vector<Vec4i> findLinesProbabilistic(Mat &frame_input);
-void drawLines(const vector<Vec2f> &lines, Mat &frame);
-void drawLinesProbabilistic(const vector<Vec4i> &lines, Mat &frame);
+void drawLines(const vector<Vec2f> &lines, Mat &frame, const Scalar &color);
+void drawLinesProbabilistic(const vector<Vec4i> &lines, Mat &frame, const Scalar &color);
 Mat cropFrame(const Mat &frame, const Point* set_of_vertices[1], 
 			int num_of_vertices[]);
 Mat findEdges(Mat &frame);
+vector<vector<Vec2f>> seperateLines(vector<Vec2f> &lines);
 
 // define variables
 Mat frame, frame_cropped, frame_gray, frame_edges;
@@ -87,7 +88,12 @@ int main(int argc, char** argv)
 
 		// find and draw lines
 		lines = findLines(frame_cropped);
-		drawLines(lines, frame);
+		//cout << lines.size() << endl;
+		vector<Vec2f> lines_left = seperateLines(lines)[0];
+		vector<Vec2f> lines_right = seperateLines(lines)[1];
+		// draw left lines
+		drawLines(lines_left, frame, Scalar(255, 0, 0));
+		drawLines(lines_right, frame, Scalar(0, 0, 255));
 
 		// set up windows to show results in 
 		string name_original_window = "Frame";
@@ -132,7 +138,7 @@ vector<Vec4i> findLinesProbabilistic(Mat &frame_input)
 	return lines;
 }
 
-void drawLines(const vector<Vec2f> &lines, Mat &frame)
+void drawLines(const vector<Vec2f> &lines, Mat &frame, const Scalar &color)
 {
 	for( size_t i = 0; i < lines.size(); i++ )
 	{
@@ -144,11 +150,11 @@ void drawLines(const vector<Vec2f> &lines, Mat &frame)
 		pt1.y = cvRound(y0 + 1000*(a));
 		pt2.x = cvRound(x0 - 1000*(-b));
 		pt2.y = cvRound(y0 - 1000*(a));
-		line(frame, pt1, pt2, Scalar(0,0,255), 3, LINE_AA);
+		line(frame, pt1, pt2, color, 3, LINE_AA);
 	}
 }
 
-void drawLinesProbabilistic(const vector<Vec4i> &lines, Mat &frame)
+void drawLinesProbabilistic(const vector<Vec4i> &lines, Mat &frame, const Scalar &color)
 {
 	for( size_t i = 0; i < lines.size(); i++ )
 	{
@@ -160,7 +166,7 @@ void drawLinesProbabilistic(const vector<Vec4i> &lines, Mat &frame)
 		pt1.y = cvRound(y0 + 1000*(a));
 		pt2.x = cvRound(x0 - 1000*(-b));
 		pt2.y = cvRound(y0 - 1000*(a));
-		line(frame, pt1, pt2, Scalar(0,0,255), 3, LINE_AA);
+		line(frame, pt1, pt2, color, 3, LINE_AA);
 	}
 }
 
@@ -190,4 +196,36 @@ Mat findEdges(Mat &frame)
 	Mat edges;
 	Canny(frame, edges, 100, 150);
 	return edges;
+}
+
+vector<vector<Vec2f>> seperateLines(vector<Vec2f> &lines)
+{
+	vector<vector<Vec2f>> line_collector(2);
+	for (size_t i = 0; i < lines.size(); i++)
+	{
+		float rho = lines[i][0], theta = lines[i][1];
+		Point2d pt1, pt2;
+		double a = cos(theta), b = sin(theta);
+		double x0 = a*rho, y0 = b*rho;
+		pt1.x = cvRound(x0 + 1000*(-b));
+		pt1.y = cvRound(y0 + 1000*(a));
+		pt2.x = cvRound(x0 - 1000*(-b));
+		pt2.y = cvRound(y0 - 1000*(a));
+
+		// calculate slope
+		double slope = (pt2.y - pt1.y) / (pt2.x - pt1.x);
+		
+		// continue only for very vertical lines
+		if (fabs(slope) < 0.5) continue;
+
+		cout << slope << endl;
+		if (slope <= 0)
+		{
+			line_collector[0].push_back(lines[i]);
+		} else 
+		{
+			line_collector[1].push_back(lines[i]);
+		}
+	}
+	return line_collector;
 }
