@@ -1,0 +1,29 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "C/C++: g++ build files",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-g",
+                "src/*.cpp",
+                "-o",
+                "src/program",
+                "-DCMAKE_BUILD_TYPE=Debug",
+                "-Wall",
+                "-Werror"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ],
+    "version": "2.0.0"
+}
