@@ -4,8 +4,7 @@
 #if 1
 HUBBA multiply(int a, int b)
 {
-	HUBBA result = a*b;
-	return result;
+	return a*b;
 #include "EndBrace.h"
 #endif
 
