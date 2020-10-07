@@ -33,7 +33,6 @@
 
 # build files
 */build/*
-!*/build/a.out
 
 # asset files
 */assets/*
