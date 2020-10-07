@@ -11,7 +11,7 @@
                 "build/program",
                 "-DCMAKE_BUILD_TYPE=Debug",
                 "-Wall",
-                "-Werror"
+                //"-Werror"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
