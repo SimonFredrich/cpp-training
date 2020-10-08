@@ -4,6 +4,8 @@
 
 using namespace std;
 
+// TODO: something with sqrt(n)
+
 void probedivision(int n)
 {
 	for (int i = 2; i <= n; i++)
