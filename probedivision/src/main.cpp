@@ -1,15 +1,14 @@
 #include <iostream>
 #include "findprime.h"
+#include "probedivision.h"
+
 using namespace std;
 
 int main()
 {
+	probedivision(542);
 
-	int prime_count = 0;
-	for (int i = 1; i < 542; i++) 
-	{
-		if (findprime(i)) prime_count++;
-	}
-	cout << prime_count << endl;
+	cout << findprime(271) << endl;
+
 	return 0;
 }
