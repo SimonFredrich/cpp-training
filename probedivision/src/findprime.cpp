@@ -1,3 +1,5 @@
+#include "findprime.h"
+
 bool findprime(int number)
 {
 	int null_mod_count = 0;
