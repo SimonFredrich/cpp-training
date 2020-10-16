@@ -38,7 +38,10 @@ message(STATUS "    include path: ${Qt5_INCLUDE_DIRS}")
 
 
 # Declare the executable target built from your sources
-add_executable(a.out main.cpp)
+add_executable(a.out 
+	src/main.cpp 
+	src/imagePixels.cpp 
+	src/imagePixels.h)
 
 # Link your application with OpenCV libraries
 target_link_libraries(a.out ${OpenCV_LIBS} Qt5::Widgets)
