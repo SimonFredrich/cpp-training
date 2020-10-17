@@ -80,7 +80,8 @@ void test()
 		Vec3b(28, 0, 8),
 		Vec3b(209, 88, 0),
 		Vec3b(34, 0, 8),
-		Vec3b(67, 88, 0)};
+		Vec3b(67, 88, 0)
+	};
 
 	/* a[0] to a[aLength-1] is the array to sort */
 
