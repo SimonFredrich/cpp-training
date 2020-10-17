@@ -31,8 +31,12 @@ int main()
 	vector<Vec3b> vals = getPixelValues(hsv_img);
 	cout << (int)vals[0][0] << endl;
 
-	//sortPixelValues(vals);
-	test();
+	sortPixelValues(vals);
+	//test();
+
+	cout << vals.size() << endl;
+	cout << (int)vals[0][0] << endl;
+	cout << (int)vals[300000][0] << endl;
 
 	int pixel_count = 0;
 	for (size_t col = 0; col < img.cols; col++)
