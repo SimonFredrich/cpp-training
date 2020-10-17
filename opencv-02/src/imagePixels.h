@@ -14,10 +14,7 @@ using namespace cv;
 vector<Vec3b> getPixelValues(const Mat& img);
 
 /**
- * return vector with chunk indication (1, 2 or 3)
- * 1: fist chunk
- * 2: second chunk
- * 3: third chunk
+ * return sorted vector<Vec3b> (sorted after "value" Vec3b("value", x, x))
  * */
 void sortPixelValues(vector<Vec3b>& vals);
 
