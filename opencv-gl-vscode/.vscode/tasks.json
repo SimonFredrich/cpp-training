@@ -1,0 +1,68 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "command": "sh",
+    "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+    },
+    "args": [
+        "-c"
+    ],
+    "options": {
+        "cwd": "${workspaceRoot}/build/"
+    },
+    "tasks": [
+        {
+            "label": "cmake",
+            "args": [
+                "cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=Debug .."
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "make",
+            "args": [
+                "make -j 8"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        // {
+        //     "type": "shell",
+        //     "label": "C/C++: g++ build files",
+        //     "command": "/usr/bin/g++",
+        //     "args": [
+        //         "-g",
+        //         "-I/mnt/8668734168732F55/Libraries/opencv-4.1.0_install/include/opencv4",
+        //         "src/*.cpp",
+        //         "-o",
+        //         "build/binary",
+        //         "-DCMAKE_BUILD_TYPE=Debug",
+        //         //"-Wall",
+        //         //"-Werror"
+        //         "-lGL", "-lSDL2", "-lGLEW",
+        //         "-L/mnt/8668734168732F55/Libraries/opencv-4.1.0_install/lib",
+        //         ""
+        //     ],
+        //     "options": {
+        //         "cwd": "${workspaceFolder}"
+        //     },
+        //     "problemMatcher": [
+        //         "$gcc"
+        //     ],
+        //     "group": {
+        //         "kind": "build",
+        //         "isDefault": true
+        //     }
+        // }
+    ]
+}
