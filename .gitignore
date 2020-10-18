@@ -39,3 +39,5 @@
 !*/assets/*.jpg
 !*/assets/*.png
 
+# ignore .vscode in cpp-training root
+.vscode/
