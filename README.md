@@ -19,3 +19,6 @@ In diesem OpenCV-Projekt widme ich mich der Sortierung von Farbwerten in Bildern
 <p align="center">
   <img src="opencv-02/assets/example_01.png" alt="Sortierte HSV Werte">
 </p>
+
+## opencv-gl-vscode
+In diesem Projekt vereine ich OpenCV und OpenGL.
